@@ -52,7 +52,7 @@ public class ClientMapRendererApp {
         System.out.println("z: " + minZ + " - " + maxZ);
 
         int width = 16 * (maxX - minX + 1);
-        int height = 16 * (maxX - minZ + 1);
+        int height = 16 * (maxZ - minZ + 1);
         
         BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         for (File pngFile : pngFiles) {
@@ -65,7 +65,11 @@ public class ClientMapRendererApp {
 
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
-                    result.setRGB(x + dx, z + dz, chunkImage.getRGB(x, z));
+                    try {
+                        result.setRGB(x + dx, z + dz, chunkImage.getRGB(x, z));
+                    } catch (Exception ex) {
+                        System.out.println("Source: ("+x+","+z+"), destination: ("+(x+dx)+","+(z+dz)+")");
+                    }
                 }
             }
         }

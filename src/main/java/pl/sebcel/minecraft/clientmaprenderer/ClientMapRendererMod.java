@@ -2,9 +2,12 @@ package pl.sebcel.minecraft.clientmaprenderer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -38,9 +41,19 @@ public class ClientMapRendererMod {
         if (event.getEntity() instanceof EntityPlayer) {
             System.out.println("Player is entering chunk (" + event.getNewChunkX() + "," + event.getNewChunkZ() + ") from chunk (" + event.getOldChunkX() + "," + event.getOldChunkZ() + ") " + event.getPhase());
             World world = event.getEntity().getEntityWorld();
+            scanTerrain(world, event.getNewChunkX()-1, event.getNewChunkZ()-1);
+            scanTerrain(world, event.getNewChunkX()-1, event.getNewChunkZ());
+            scanTerrain(world, event.getNewChunkX()-1, event.getNewChunkZ()+1);
+            scanTerrain(world, event.getNewChunkX(), event.getNewChunkZ()-1);
             scanTerrain(world, event.getNewChunkX(), event.getNewChunkZ());
+            scanTerrain(world, event.getNewChunkX(), event.getNewChunkZ()+1);
+            scanTerrain(world, event.getNewChunkX()+1, event.getNewChunkZ()-1);
+            scanTerrain(world, event.getNewChunkX()+1, event.getNewChunkZ());
+            scanTerrain(world, event.getNewChunkX()+1, event.getNewChunkZ()+1);
         }
     }
+    
+    private Set<IBlockState> blockStates = new HashSet<>();
 
     public void scanTerrain(World world, int chunkX, int chunkZ) {
         System.out.println("Scanning world in chunk (" + chunkX + "," + chunkZ + ")");
@@ -49,18 +62,28 @@ public class ClientMapRendererMod {
         int[] colorMap = new int[256];
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                int y = heightMap[x * 16 + z];
+                int y = heightMap[x * 16 + z] + 5;
+                if (y < 255) {
+                    y = 255;
+                }
                 IBlockState blockState = null;
+                String blockName = null;
                 do {
                     blockState = chunk.getBlockState(x, y, z);
+                    blockName = blockState.getBlock().getLocalizedName();
+                    blockStates.add(blockState);
                     y--;
-                } while (y > 0 && blockState.getBlock().getLocalizedName().equals("Air"));
+                } while (y > 0 && (blockName.equals("Air") || blockName.equals("Torch") || blockName.equals("Sign"))); // excluding air and torches
                 colorMap[x * 16 + z] = blockState.getMaterial().getMaterialMapColor().colorValue;
-
             }
         }
 
         renderChunk(heightMap, colorMap, chunkX, chunkZ);
+        
+        for (IBlockState blockState : blockStates) {
+            System.out.println(blockState.getBlock().getLocalizedName()+" " + Block.getIdFromBlock(blockState.getBlock()));
+        }
+        
     }
 
     private void renderChunk(int[] heightMap, int[] colorMap, int chunkX, int chunkZ) {
