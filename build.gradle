@@ -11,7 +11,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "1.0"
 group = "pl.sebcel.minecraft.mcclientmap"
-archivesBaseName = "modid"
+archivesBaseName = "mcclientmap"
 
 sourceCompatibility = targetCompatibility = '1.8'
 compileJava {

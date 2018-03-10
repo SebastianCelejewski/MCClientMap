@@ -17,8 +17,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = ClientMapRenderer.MODID, name = ClientMapRenderer.NAME, version = ClientMapRenderer.VERSION)
-public class ClientMapRenderer {
+@Mod(modid = ClientMapRendererMod.MODID, name = ClientMapRendererMod.NAME, version = ClientMapRendererMod.VERSION)
+public class ClientMapRendererMod {
     
     public static final String MODID = "clientsidemaprenderer";
     public static final String NAME = "Client-Side Map Renderer";
@@ -74,7 +74,7 @@ public class ClientMapRenderer {
                 }
             }
 
-            String fileName = "chunk-" + chunkX + "-" + chunkZ + ".png";
+            String fileName = "chunk_" + chunkX + "_" + chunkZ + ".png";
             File outputFile = new File(fileName);
             System.out.println("Writing chunk to " + outputFile.getAbsolutePath());
             ImageIO.write(image, "png", outputFile);
