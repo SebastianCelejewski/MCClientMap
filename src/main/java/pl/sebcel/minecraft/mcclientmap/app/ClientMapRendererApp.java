@@ -25,6 +25,10 @@ public class ClientMapRendererApp {
     public void run(String inputDirectoryPath) {
         File inputDirectory = new File(inputDirectoryPath);
         System.out.println("Looking for chunk png files in " + inputDirectory.getAbsolutePath());
+        
+        String serverName = getServerNamefromInputDirectory(inputDirectory);
+        
+        System.out.println(serverName);
 
         File[] pngFiles = inputDirectory.listFiles((FileFilter) pathname -> pathname.getName().endsWith(".png"));
 
@@ -74,13 +78,18 @@ public class ClientMapRendererApp {
             }
         }
 
-        fileUtils.saveImage(result, new File("output.png"));
+        String outputFileName = serverName + "-map.png";
+        fileUtils.saveImage(result, new File(outputFileName));
     }
 
     private ChunkPos getChunkCoordinatesFromFileName(String fileName) {
         int x = Integer.parseInt(fileName.split("[_\\.]")[1]);
         int z = Integer.parseInt(fileName.split("[_\\.]")[2]);
         return new ChunkPos(x, z);
+    }
+    
+    private String getServerNamefromInputDirectory(File inputDirectoryName) {
+        return inputDirectoryName.getName();
     }
 
 }
