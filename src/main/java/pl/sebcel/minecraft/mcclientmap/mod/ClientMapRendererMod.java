@@ -39,10 +39,11 @@ public class ClientMapRendererMod {
     @SubscribeEvent
     public void handlePlayerEnteringChunkEvent(EnteringChunk event) {
         if (event.getEntity() instanceof EntityPlayer) {
-            System.out.println("Server: " + getServerName());
+            
             System.out.println("Player is entering chunk (" + event.getNewChunkX() + "," + event.getNewChunkZ() + ") from chunk (" + event.getOldChunkX() + "," + event.getOldChunkZ() + ") " + event.getPhase());
 
             World world = event.getEntity().getEntityWorld();
+            String serverName = getServerName();
             List<ChunkPos> chunkPositionsNearPlayer = get3x3chunkPositionsAroundCentralChunk(event.getNewChunkX(), event.getNewChunkZ());
             
             for (ChunkPos chunkPosition : chunkPositionsNearPlayer) {
@@ -53,7 +54,7 @@ public class ClientMapRendererMod {
 
                 ChunkTerrainData chunkTerrainData = terrainScanner.scanTerrain(world, chunkPosition);
                 BufferedImage chunkImage = chunkRenderer.renderChunk(chunkTerrainData, chunkPosition);
-                chunkRenderer.saveChunkImage(chunkImage, chunkPosition);
+                chunkRenderer.saveChunkImage(serverName, chunkImage, chunkPosition);
             }
         }
     }

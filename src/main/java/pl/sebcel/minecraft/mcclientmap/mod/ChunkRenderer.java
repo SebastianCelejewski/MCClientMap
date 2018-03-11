@@ -8,6 +8,8 @@ import pl.sebcel.minecraft.mcclientmap.utils.FileUtils;
 
 public class ChunkRenderer {
     
+    public final static String ROOT_FOLDER = "mcClientMaps";
+    
     private FileUtils fileUtils = new FileUtils();
 
     public BufferedImage renderChunk(ChunkTerrainData chunkTerrainData, ChunkPos chunkPosition) {
@@ -23,8 +25,11 @@ public class ChunkRenderer {
         return image;
     }
     
-    public void saveChunkImage(BufferedImage chunkImage, ChunkPos chunkPosition) {
-        String fileName = "chunk_" + chunkPosition.x + "_" + chunkPosition.z + ".png";
+    public void saveChunkImage(String serverName, BufferedImage chunkImage, ChunkPos chunkPosition) {
+        File folderName = new File(ROOT_FOLDER + File.separator + serverName);
+        folderName.mkdirs();
+        
+        String fileName = ROOT_FOLDER + File.separator + serverName + File.separator + "chunk_" + chunkPosition.x + "_" + chunkPosition.z + ".png";
         File outputFile = new File(fileName);
         System.out.println("Writing chunk to " + outputFile.getAbsolutePath());
         fileUtils.saveImage(chunkImage,  outputFile);
