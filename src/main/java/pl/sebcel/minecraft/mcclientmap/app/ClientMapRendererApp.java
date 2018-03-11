@@ -1,12 +1,11 @@
-package pl.sebcel.minecraft.clientmaprenderer;
+package pl.sebcel.minecraft.mcclientmap.app;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
 
-import javax.imageio.ImageIO;
-
 import net.minecraft.util.math.ChunkPos;
+import pl.sebcel.minecraft.mcclientmap.utils.FileUtils;
 
 public class ClientMapRendererApp {
 
@@ -19,8 +18,9 @@ public class ClientMapRendererApp {
         String inputDirectoryPath = args[0];
 
         new ClientMapRendererApp().run(inputDirectoryPath);
-        ;
     }
+    
+    private FileUtils fileUtils = new FileUtils();
 
     public void run(String inputDirectoryPath) {
         File inputDirectory = new File(inputDirectoryPath);
@@ -58,7 +58,7 @@ public class ClientMapRendererApp {
         for (File pngFile : pngFiles) {
             System.out.println("Rendering image " + pngFile.getName());
             ChunkPos chunkCoordinates = getChunkCoordinatesFromFileName(pngFile.getName());
-            BufferedImage chunkImage = loadImage(pngFile);
+            BufferedImage chunkImage = fileUtils.loadImage(pngFile);
 
             int dx = (chunkCoordinates.x - minX) * 16;
             int dz = (chunkCoordinates.z - minZ) * 16;
@@ -74,7 +74,7 @@ public class ClientMapRendererApp {
             }
         }
 
-        saveImage(result, new File("output.png"));
+        fileUtils.saveImage(result, new File("output.png"));
     }
 
     private ChunkPos getChunkCoordinatesFromFileName(String fileName) {
@@ -83,19 +83,4 @@ public class ClientMapRendererApp {
         return new ChunkPos(x, z);
     }
 
-    private BufferedImage loadImage(File pngFilePath) {
-        try {
-            return ImageIO.read(pngFilePath);
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to load image from " + pngFilePath + ": " + ex.getMessage(), ex);
-        }
-    }
-
-    private void saveImage(BufferedImage image, File pngFilePath) {
-        try {
-            ImageIO.write(image, "png", pngFilePath);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 }
