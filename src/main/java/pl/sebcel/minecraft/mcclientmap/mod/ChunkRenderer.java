@@ -26,12 +26,10 @@ public class ChunkRenderer {
         return image;
     }
 
-    public void saveChunkImage(String serverName, BufferedImage chunkImage, ChunkPos chunkPosition) {
-        File folderName = new File(ROOT_FOLDER + File.separator + serverName);
-        folderName.mkdirs();
-
-        String fileName = ROOT_FOLDER + File.separator + serverName + File.separator + "chunk_" + chunkPosition.x + "_" + chunkPosition.z + ".png";
+    public void saveChunkImage(String serverName, String worldName, BufferedImage chunkImage, ChunkPos chunkPosition) {
+        String fileName = ROOT_FOLDER + File.separator + serverName + "_" + worldName + File.separator + "chunk_" + chunkPosition.x + "_" + chunkPosition.z + ".png";
         File outputFile = new File(fileName);
+        outputFile.getParentFile().mkdirs();
         System.out.println("Writing chunk to " + outputFile.getAbsolutePath());
         fileUtils.saveImage(chunkImage, outputFile);
     }

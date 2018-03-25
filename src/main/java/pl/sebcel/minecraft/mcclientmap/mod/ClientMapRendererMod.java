@@ -44,6 +44,7 @@ public class ClientMapRendererMod {
 
             World world = event.getEntity().getEntityWorld();
             String serverName = getServerName();
+            String worldName = getWorldName(world);
             List<ChunkPos> chunkPositionsNearPlayer = get3x3chunkPositionsAroundCentralChunk(event.getNewChunkX(), event.getNewChunkZ());
             
             for (ChunkPos chunkPosition : chunkPositionsNearPlayer) {
@@ -53,8 +54,10 @@ public class ClientMapRendererMod {
                 }
 
                 ChunkTerrainData chunkTerrainData = terrainScanner.scanTerrain(world, chunkPosition);
-                BufferedImage chunkImage = chunkRenderer.renderChunk(chunkTerrainData, chunkPosition);
-                chunkRenderer.saveChunkImage(serverName, chunkImage, chunkPosition);
+                if (chunkTerrainData.isDataValid()) {
+                    BufferedImage chunkImage = chunkRenderer.renderChunk(chunkTerrainData, chunkPosition);
+                    chunkRenderer.saveChunkImage(serverName, worldName, chunkImage, chunkPosition);
+                }
             }
         }
     }
@@ -85,6 +88,15 @@ public class ClientMapRendererMod {
         } catch (Throwable ex) {
             return "unknown";
         }
+    }
+    
+    private String getWorldName(World world) {
+        try {
+            return world.provider.getDimensionType().getName();
+        } catch (Throwable ex) {
+            return "unknownWorldName";
+        }
+        
     }
 
 }
