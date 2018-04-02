@@ -41,10 +41,14 @@ public class TerrainScanner {
         Chunk chunk = world.getChunkFromChunkCoords(chunkPosition.x, chunkPosition.z);
         int[] heightMap = chunk.getHeightMap();
         int[] colorMap = new int[256];
-        boolean dataValid = true;
+        boolean dataValid = false;
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                int y = 255;
+                int y = heightMap[x * 16 + z];
+                if (y > 0) {
+                    dataValid = true;
+                }
+                y = 255;
                 IBlockState blockState = null;
                 String blockName = null;
                 do {
